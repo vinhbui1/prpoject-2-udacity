@@ -52,8 +52,6 @@ fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
  */
 @BindingAdapter("goneIfNotNull")
 fun goneIfNotNull(view: View, it: Any?) {
-    Log.e("TAG1goneIfNotNull", it.toString());
-
     view.visibility = if (it != null) View.GONE else View.VISIBLE
 }
 
@@ -63,9 +61,7 @@ fun goneIfNotNull(view: View, it: Any?) {
 @BindingAdapter("imageUrl")
 fun setImageUrl(imageView: ImageView, pic: DatabasePictureOfDay?) {
     if (pic != null){
-        Log.e("TAG1", pic.toString());
 
-        Log.e("TAG1", pic.url);
 
     Picasso.get().load(pic.url).into(imageView)}
 }

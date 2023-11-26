@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.R
@@ -27,18 +28,63 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
         val recyclerViewNews = binding.asteroidRecycler
-        viewModel.asteroids.observe(viewLifecycleOwner, Observer { it ->
-            val newsAdapter = MainAdapter(it){
-                Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT).show()
-                this.findNavController().navigate(MainFragmentDirections.actionShowDetail(it))
+        val listData = listOf(
+            Asteroid(
+                id = 2426071,
+                codename = "426071 (2012 CD29)",
+                closeApproachDate = "2023-11-25",
+                absoluteMagnitude = 19.94,
+                estimatedDiameter = 0.6109982675,
+                relativeVelocity = 21.0317768281,
+                distanceFromEarth = 0.3242307374,
+                isPotentiallyHazardous = false
+            ),
+            Asteroid(
+                id = 3618494,
+                codename = "(2012 WS10)",
+                closeApproachDate = "2023-11-25",
+                absoluteMagnitude = 24.9,
+                estimatedDiameter = 0.0622357573,
+                relativeVelocity = 17.2683641843,
+                distanceFromEarth = 0.1736117899,
+                isPotentiallyHazardous = false
+            ),
+            Asteroid(
+                id = 3648769,
+                codename = "(2013 TK4)",
+                closeApproachDate = "2023-11-25",
+                absoluteMagnitude = 23.86,
+                estimatedDiameter = 0.1004708274,
+                relativeVelocity = 6.6674845126,
+                distanceFromEarth = 0.1875343468,
+                isPotentiallyHazardous = false
+            ),
+            // ... (other Asteroid objects)
+            Asteroid(
+                id = 54403824,
+                codename = "(2023 VH5)",
+                closeApproachDate = "2023-11-25",
+                absoluteMagnitude = 25.165,
+                estimatedDiameter = 0.0550858403,
+                relativeVelocity = 9.037805623,
+                distanceFromEarth = 0.0458982973,
+                isPotentiallyHazardous = false
+            )
+        )
+        val newsAdapter = MainAdapter(listData) {
+            Toast.makeText(context, it.toString(), Toast.LENGTH_SHORT).show()
+            this.findNavController().navigate(MainFragmentDirections.actionShowDetail(it))
+        }
+        recyclerViewNews.adapter = newsAdapter
 
-                (it.codename)
-            }
-            recyclerViewNews.adapter = newsAdapter
-        })
-        Log.e("TAG111",  viewModel.picOfDay.toString());
+        viewModel.asteroidsdata.observe(this.viewLifecycleOwner) { asteroids ->
+            Log.d("TAG", "Asteroids size:asteroids ")
+            newsAdapter.setData(asteroids)
 
-        // recyclerViewNews.layoutManager = LinearLayoutManager(this)
+        }
+
+
+        recyclerViewNews.layoutManager = LinearLayoutManager(this.context)
         recyclerViewNews.setHasFixedSize(true)
         setHasOptionsMenu(true)
 
@@ -74,7 +120,10 @@ class MainAdapter(private var mList: List<Asteroid>,    private val listener: (A
     override fun getItemCount():Int{
         return mList.size
     }
-
+    fun setData(newList: List<Asteroid>) {
+        mList = newList
+        notifyDataSetChanged()
+    }
     override fun onBindViewHolder(holder: LargeNewsViewHolder, position: Int) {
         val largeNews = mList[position]
         holder.bind(largeNews)

@@ -26,12 +26,9 @@ class PictureOfDayRepository(private val database: NasaDatabase) {
     suspend fun refreshPictureOfDay(): DatabasePictureOfDay? {
         withContext(Dispatchers.IO) {
             try {
-                Log.e("TAG111PICTURE", "data.toString()");
 
                 val pictureOfDay = AsteroidApi.asteroidRadarService.getPictureOfDay(Constants.API_KEY).await()
                val data = pictureOfDay.asDatabaseModel()
-                Log.e("TAG111PICTURE", data.toString());
-
                 database.pictureOfDayDao.insertPictureOfDay(data)
                 return@withContext data
             }catch (e: Exception){
